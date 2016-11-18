@@ -94,7 +94,7 @@ func listContainers(client *docker.Client) {
 
 	for _, containerEntry := range containers {
 		if container, _ := client.InspectContainer(containerEntry.ID); container != nil {
-			logging.Info.Printf("Container '%s' with ID '%s'.", container.Name, container.ID)
+			logging.Info.Printf("Container '%s' with ID '%s' %s.", container.Name, container.ID, container.State.Status)
 		}
 	}
 }
