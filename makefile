@@ -60,15 +60,15 @@ crosscompile: linux-build darwin-build freebsd-build windows-build tar-everythin
 
 docker:
 	@if [ -e "bin/linux-amd64/${APPNAME}" ]; then \
-		sudo docker build -t ${DOCKER_REPO}:${VERSION} -q --build-arg CONT_IMG_VER=${VERSION} --build-arg BINARY=bin/linux-amd64/${APPNAME} . ; \
-		sudo docker tag ${DOCKER_REPO}:${VERSION} ${DOCKER_REPO}:latest ; \
+		docker build -t ${DOCKER_REPO}:${VERSION} -q --build-arg CONT_IMG_VER=${VERSION} --build-arg BINARY=bin/linux-amd64/${APPNAME} . ; \
+		docker tag ${DOCKER_REPO}:${VERSION} ${DOCKER_REPO}:latest ; \
 	else \
 		echo "Please run crosscompile before running docker command." ; \
 		exit 1 ; \
 	fi
 
 docker-run:
-	@sudo docker run -it --rm -v /etc/ssl/certs/:/etc/ssl/certs/ --name ${APPNAME} dmportella/${APPNAME}:latest -t ${TOKEN} -verbose
+	@docker run -it --rm -v /etc/ssl/certs/:/etc/ssl/certs/ --name ${APPNAME} dmportella/${APPNAME}:latest -t ${TOKEN} -verbose
 
 tar-everything:
 	@echo "tar-everything..."
