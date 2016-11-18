@@ -1,3 +1,4 @@
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
@@ -6,6 +7,7 @@
 # Folders
 _obj
 _test
+bin
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -22,3 +24,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+docker-beat
+*.cover
