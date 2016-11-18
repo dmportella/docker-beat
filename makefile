@@ -50,10 +50,10 @@ tools:
 
 build: version test
 	@echo "GO BUILD..."
-	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH}" -v -o ./bin/${APPNAME} .
+	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
 
 buildonly:
-	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH}" -v -o ./bin/${APPNAME} .	
+	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .	
 
 crosscompile: linux-build darwin-build freebsd-build windows-build tar-everything
 	@echo "crosscompile done..."
@@ -144,7 +144,7 @@ generate:
 # any common errors.
 vet:
 	@echo "GO VET..."
-	@go tool vet $(VETARGS) $$(ls -d */ | grep -v vendor) ./; if [ $$? -eq 1 ]; then \
+	@go tool vet $(VETARGS) $$(ls -d */ | grep -v vendor)/; if [ $$? -eq 1 ]; then \
 		echo ""; \
 		echo "Vet found suspicious constructs. Please check the reported constructs"; \
 		echo "and fix them if necessary before submitting the code for review."; \
