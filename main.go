@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/dmportella/docker-beat/logging"
@@ -23,6 +24,7 @@ var (
 	DockerEndpoint string
 	Version        bool
 	Verbose        bool
+	Help           bool
 )
 
 func init() {
@@ -34,11 +36,14 @@ func init() {
 	flag.StringVar(&DockerEndpoint, "docker-endpoint", defaultDockerEndpoint, dockerEndpointUsage)
 
 	const (
+		defaultHelp    = false
+		helpUsage      = "Redirect trace information to the standard out."
 		defaultVerbose = false
 		verboseUsage   = "Redirect trace information to the standard out."
 	)
 
 	flag.BoolVar(&Verbose, "verbose", defaultVerbose, verboseUsage)
+	flag.BoolVar(&Help, "help", defaultHelp, helpUsage)
 	flag.Parse()
 
 	flag.Usage = func() {
@@ -56,7 +61,7 @@ func main() {
 		logging.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
 	}
 
-	if len(os.Args) == 1 {
+	if Help {
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -109,9 +114,13 @@ func dockerEventListener(dockerEvents chan *docker.APIEvents, client *docker.Cli
 	}
 
 	for event := range dockerEvents {
+		data, _ := json.MarshalIndent(event, "", "    ")
+
+		logging.Trace.Printf("%s", string(data[:]))
+
 		if event.Status == "start" {
 			if container, _ := client.InspectContainer(event.ID); container != nil {
-				logging.Info.Printf("Container '%s' with ID '%s' STARTED.", container.Name, container.ID)
+				logging.Info.Printf("Container '%s' with ID '%s' %s.", container.Name, container.ID, container.State.Status)
 			}
 		}
 	}
