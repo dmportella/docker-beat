@@ -1,4 +1,5 @@
 APPNAME?="docker-beat"
+REPONAME?="dmportella"
 TEST?=$$(go list ./... | grep -v '/vendor/')
 VETARGS?=-all
 GOFMT_FILES?=$$(find . -name '*.go' | grep -v vendor)
@@ -6,7 +7,7 @@ REV?=$$(git rev-parse --short HEAD)
 BRANCH?=$$(git rev-parse --abbrev-ref HEAD)
 BUILDFILES?=$$(find bin -mindepth 1 -maxdepth 1 -type f)
 VERSION?="0.0.0"
-DOCKER_REPO?="dmportella/${APPNAME}"
+DOCKER_REPO?="${REPONAME}/${APPNAME}"
 TOKEN?=""
 
 default: lazy
@@ -24,11 +25,11 @@ push:
 
 subtree-pull:
 	@git log | grep git-subtree-dir | awk '{ print $2 }'
-	@git subtree pull --prefix=website/public git@github.com:dmportella/qilbot.git gh-pages
+	@git subtree pull --prefix=website/public git@github.com:${REPONAME}/${APPNAME}.git gh-pages
 
 subtree-push:
 	@git log | grep git-subtree-dir | awk '{ print $2 }'
-	@git subtree push --prefix=website/public git@github.com:dmportella/${APPNAME}.git gh-pages
+	@git subtree push --prefix=website/public git@github.com:${REPONAME}/${APPNAME}.git gh-pages
 
 update:
 	@git pull origin ${BRANCH}
@@ -53,7 +54,7 @@ build: version test
 	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
 
 buildonly:
-	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .	
+	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
 
 crosscompile: linux-build darwin-build freebsd-build windows-build tar-everything
 	@echo "crosscompile done..."
@@ -68,7 +69,7 @@ docker:
 	fi
 
 docker-run:
-	@docker run -it --rm -v /etc/ssl/certs/:/etc/ssl/certs/ --name ${APPNAME} dmportella/${APPNAME}:latest -t ${TOKEN} -verbose
+	@docker run -it --rm -v /etc/ssl/certs/:/etc/ssl/certs/ --name ${APPNAME} ${DOCKER_REPO}:latest -t ${TOKEN} -verbose
 
 tar-everything:
 	@echo "tar-everything..."
