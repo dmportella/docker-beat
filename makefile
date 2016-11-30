@@ -56,7 +56,7 @@ build: version test
 buildonly:
 	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
 
-crosscompile: linux-build darwin-build freebsd-build windows-build tar-everything
+crosscompile: linux-build darwin-build freebsd-build windows-build tar-everything shasums
 	@echo "crosscompile done..."
 
 docker:
