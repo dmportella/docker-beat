@@ -9,6 +9,8 @@ BUILDFILES?=$$(find bin -mindepth 1 -maxdepth 1 -type f)
 VERSION?="0.0.0"
 DOCKER_REPO?="${REPONAME}/${APPNAME}"
 TOKEN?=""
+XC_OS=$$(go env GOOS)
+XC_ARCH=$$(go env GOARCH)
 
 default: lazy
 
@@ -51,10 +53,10 @@ tools:
 
 build: version test
 	@echo "GO BUILD..."
-	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
+	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=${XC_OS}/${XC_ARCH}" -v -o ./bin/${APPNAME} .
 
 buildonly:
-	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=Any" -v -o ./bin/${APPNAME} .
+	@CGO_ENABLED=0 go build -ldflags "-s -X main.Build=${VERSION} -X main.Revision=${REV} -X main.Branch=${BRANCH} -X main.OSArch=${XC_OS}/${XC_ARCH}" -v -o ./bin/${APPNAME} .
 
 crosscompile: linux-build darwin-build freebsd-build windows-build tar-everything shasums
 	@echo "crosscompile done..."

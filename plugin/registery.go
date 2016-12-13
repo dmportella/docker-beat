@@ -1,4 +1,4 @@
-package plugins
+package plugin
 
 // EventConsumer is the interface for all the consumers used by docker-beat.
 type EventConsumer interface {

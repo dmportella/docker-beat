@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	_ "github.com/dmportella/docker-beat/builtin"
 	"github.com/dmportella/docker-beat/logging"
 	"github.com/fsouza/go-dockerclient"
 	"io/ioutil"
@@ -37,7 +38,7 @@ func init() {
 
 	const (
 		defaultHelp    = false
-		helpUsage      = "Redirect trace information to the standard out."
+		helpUsage      = "Prints the help information."
 		defaultVerbose = false
 		verboseUsage   = "Redirect trace information to the standard out."
 	)
