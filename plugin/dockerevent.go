@@ -6,5 +6,5 @@ import (
 
 // DockerEvent encapsulates a docker event please refer to 'http://github.com/fsouza/go-dockerclient/event.go' for more information.
 type DockerEvent struct {
-	docker.APIEvents
+	*docker.APIEvents
 }

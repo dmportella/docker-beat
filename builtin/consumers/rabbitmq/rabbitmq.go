@@ -8,7 +8,7 @@ import (
 type consumer struct {
 }
 
-func (consumer *consumer) OnEvent(events plugin.DockerEvent) {
+func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
 
 }
 

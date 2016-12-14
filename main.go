@@ -1,12 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	_ "github.com/dmportella/docker-beat/builtin"
 	"github.com/dmportella/docker-beat/logging"
-	"github.com/fsouza/go-dockerclient"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -23,6 +21,7 @@ var (
 // Variables used for command line parameters
 var (
 	DockerEndpoint string
+	Consumer       string
 	Version        bool
 	Verbose        bool
 	Help           bool
@@ -32,9 +31,12 @@ func init() {
 	const (
 		defaultDockerEndpoint = "unix:///var/run/docker.sock"
 		dockerEndpointUsage   = "The Url or unix socket address for the Docker Remote API."
+		defaultConsumer       = "console"
+		ConsumerUsage         = "Consumer to use: Webhook, Rabbitmq, etc."
 	)
 
 	flag.StringVar(&DockerEndpoint, "docker-endpoint", defaultDockerEndpoint, dockerEndpointUsage)
+	flag.StringVar(&Consumer, "consumer", defaultConsumer, ConsumerUsage)
 
 	const (
 		defaultHelp    = false
@@ -79,50 +81,14 @@ func main() {
 		}
 	}()
 
-	dockerEvents := make(chan *docker.APIEvents)
+	beat, err := newDockerBeat(DockerEndpoint, Consumer)
 
-	client, err := docker.NewClient(DockerEndpoint)
-
-	if err != nil {
-		logging.Error.Printf(err.Error())
-	}
-
-	go listContainers(client)
-
-	go dockerEventListener(dockerEvents, client)
-
-	// Simple way to keep program running until CTRL-C is pressed.
-	<-make(chan struct{})
-}
-
-func listContainers(client *docker.Client) {
-	containers, _ := client.ListContainers(docker.ListContainersOptions{All: true})
-
-	for _, containerEntry := range containers {
-		if container, _ := client.InspectContainer(containerEntry.ID); container != nil {
-			logging.Info.Printf("Container '%s' with ID '%s' %s.", container.Name, container.ID, container.State.Status)
-		}
-	}
-}
-
-func dockerEventListener(dockerEvents chan *docker.APIEvents, client *docker.Client) {
-
-	err := client.AddEventListener(dockerEvents)
-
-	if err != nil {
-		logging.Error.Printf(err.Error())
+	if err == nil {
+		beat.Start()
+	} else {
 		panic(err)
 	}
 
-	for event := range dockerEvents {
-		data, _ := json.MarshalIndent(event, "", "    ")
-
-		logging.Trace.Printf("%s", string(data[:]))
-
-		if event.Status == "start" {
-			if container, _ := client.InspectContainer(event.ID); container != nil {
-				logging.Info.Printf("Container '%s' with ID '%s' %s.", container.Name, container.ID, container.State.Status)
-			}
-		}
-	}
+	// Simple way to keep program running until CTRL-C is pressed.
+	<-make(chan struct{})
 }
