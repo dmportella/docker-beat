@@ -23,4 +23,4 @@ The docker container supports Docker API Socket as a volume (not recommended) or
 
 ### Running docker-beat with Docker API as Endpoint
 
-> $ docker run --rm dmportella/docker-beat --consumer webhook --docker-endpoint "tcp://localhost:2375" --webhook-endpoint http://requestb.in/rn7cixrn --
+> $ docker run --rm dmportella/docker-beat --consumer webhook --docker-endpoint "tcp://localhost:2375" --webhook-endpoint http://requestb.in/rn7cixrn
