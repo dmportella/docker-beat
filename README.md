@@ -15,7 +15,7 @@ Please check the wiki for more information: [WIKI](https://github.com/dmportella
 
 ## Running in Docker
 
-The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url (current does not support SSL).
+The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url (currently does not support SSL).
 
 ### Running docker-beat with Docker API as Socker Volume
 
