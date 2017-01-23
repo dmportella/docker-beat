@@ -8,16 +8,20 @@ import (
 	"github.com/dmportella/docker-beat/logging"
 	"github.com/dmportella/docker-beat/plugin"
 	"net/http"
+	"net/url"
 	"time"
 )
 
 var (
 	webHookEnpoint string
+	webHookIndent  bool
 )
 
 const (
 	defaultWebHookEndpoint = ""
 	webHookEnpointUsage    = "webhook: The URL that events will be POSTed too."
+	defaultwebHookIndent   = false
+	webHookIndentUsage     = "webhook: Indent the json output."
 
 	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
 )
@@ -27,14 +31,26 @@ type consumer struct {
 }
 
 func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-	data, _ := json.MarshalIndent(event, "", "    ")
 
-	consumer.request("POST", "http://requestb.in/vheq9vvh", data)
+	var data []byte
+
+	if webHookIndent {
+		data, _ = json.MarshalIndent(event, "", "    ")
+	} else {
+		data, _ = json.Marshal(event)
+	}
+
+	if _, err := url.Parse(webHookEnpoint); err != nil || webHookEnpoint == "" {
+		logging.Error.Printf("Webhook url is not valid '%s'\n", webHookEnpoint)
+	} else {
+		consumer.request("POST", webHookEnpoint, data)
+	}
 }
 
 func init() {
 	// do something here
 	flag.StringVar(&webHookEnpoint, "webhook-endpoint", defaultWebHookEndpoint, webHookEnpointUsage)
+	flag.BoolVar(&webHookIndent, "webhook-indent", defaultwebHookIndent, webHookIndentUsage)
 
 	consumer := &consumer{}
 

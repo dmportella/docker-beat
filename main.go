@@ -53,9 +53,7 @@ func init() {
 		fmt.Printf("Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 	}
-}
 
-func main() {
 	fmt.Printf("docker-beat - Version: %s Branch: %s Revision: %s. OSArch: %s.\n\rDaniel Portella (c) 2016\n\r", Build, Branch, Revision, OSArch)
 
 	if Verbose {
@@ -68,7 +66,9 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+}
 
+func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
