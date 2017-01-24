@@ -24,6 +24,7 @@ before_deploy:
   - "export shasums=$(echo bin/docker-beat-${TRAVIS_TAG}.shasums)"
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: ${GITHUB_TOKEN}
   file:
