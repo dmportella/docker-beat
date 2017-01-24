@@ -9,10 +9,6 @@ A simple docker event beat server that will distribute docker events to plugins/
 
 [![dockeri.co](http://dockeri.co/image/dmportella/docker-beat)](https://hub.docker.com/r/dmportella/docker-beat/)
 
-## Documentation
-
-Please check the wiki for more information: [WIKI](https://github.com/dmportella/docker-beat/wiki)
-
 ## Running in Docker
 
 The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url (currently does not support SSL).
@@ -24,3 +20,15 @@ The docker container supports Docker API Socket as a volume (not recommended) or
 ### Running docker-beat with Docker API as Endpoint
 
 > $ docker run --rm dmportella/docker-beat --consumer webhook --docker-endpoint "tcp://localhost:2375" --webhook-endpoint http://requestb.in/rn7cixrn
+
+## Running locally
+
+Should be simple to run the application locally it differs jsut slightly between OS.
+
+### Linux, Darwin and FreeBSD
+
+> ./docker-beat --consumer webhook --webhook-endpoint http://requestb.in/rn7cixrn
+
+### Windows
+
+> .\docker-beat --consumer webhook --docker-endpoint "tcp://localhost:2375" --webhook-endpoint http://requestb.in/rn7cixrn
