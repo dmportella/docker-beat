@@ -36,6 +36,9 @@ subtree-push:
 update:
 	@git pull origin ${BRANCH}
 
+vendor:
+	@govendor add +external
+
 version:
 	@echo "SOFTWARE VERSION"
 	@echo "\tbranch:\t\t" ${BRANCH}

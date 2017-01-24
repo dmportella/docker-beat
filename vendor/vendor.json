@@ -238,6 +238,12 @@
 			"revisionTime": "2016-11-15T21:05:04Z"
 		},
 		{
+			"checksumSHA1": "O2sws+miRriMPObINsbwa0jnXxE=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "4971afdc2f162e82d185353533d3cf16188a9f4e",
+			"revisionTime": "2016-11-15T21:05:04Z"
+		},
+		{
 			"checksumSHA1": "ENl6I8+3AaBanbn9CVExMjDTHPc=",
 			"origin": "github.com/docker/docker/vendor/golang.org/x/sys/unix",
 			"path": "golang.org/x/sys/unix",
