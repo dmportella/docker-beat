@@ -26,7 +26,7 @@ The docker container supports Docker API Socket as a volume (not recommended) or
 Should be simple to run the application locally it differs just slightly between OS.
 
 ```
-docker-beat - Version: 0.0.0 Branch: master Revision: a798731. OSArch: linux/amd64.
+docker-beat - Version: 0.0.2 Branch: master Revision: a798731. OSArch: linux/amd64.
 Daniel Portella (c) 2016
 Usage of ./bin/docker-beat:
   -consumer string
