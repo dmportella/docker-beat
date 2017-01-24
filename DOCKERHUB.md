@@ -6,7 +6,7 @@ A simple docker event beat server that will distribute docker events to plugins/
 
 ## Running in Docker
 
-The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url (currently does not support SSL).
+The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url.
 
 ### Running docker-beat with Docker API as Socker Volume
 
