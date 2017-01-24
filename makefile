@@ -39,6 +39,9 @@ update:
 vendor:
 	@govendor add +external
 
+vendor-update:
+	@govendor update +external
+
 version:
 	@echo "SOFTWARE VERSION"
 	@echo "\tbranch:\t\t" ${BRANCH}
