@@ -23,7 +23,7 @@ The docker container supports Docker API Socket as a volume (not recommended) or
 
 ## Running locally
 
-Should be simple to run the application locally it differs jsut slightly between OS.
+Should be simple to run the application locally it differs just slightly between OS.
 
 ### Linux, Darwin and FreeBSD
 
