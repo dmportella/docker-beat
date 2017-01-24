@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -13,8 +14,9 @@ import (
 )
 
 var (
-	webHookEnpoint string
-	webHookIndent  bool
+	webHookEnpoint       string
+	webHookIndent        bool
+	webhookSkipSSLVerify bool
 )
 
 const (
@@ -22,6 +24,9 @@ const (
 	webHookEnpointUsage    = "webhook: The URL that events will be POSTed too."
 	defaultwebHookIndent   = false
 	webHookIndentUsage     = "webhook: Indent the json output."
+
+	defaultSkipSSLVerifyIndent = false
+	skipSSLVerifyUsage         = "webhook: Indent the json output."
 
 	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
 )
@@ -51,6 +56,7 @@ func init() {
 	// do something here
 	flag.StringVar(&webHookEnpoint, "webhook-endpoint", defaultWebHookEndpoint, webHookEnpointUsage)
 	flag.BoolVar(&webHookIndent, "webhook-indent", defaultwebHookIndent, webHookIndentUsage)
+	flag.BoolVar(&webhookSkipSSLVerify, "webhook-skip-ssl-verify", defaultSkipSSLVerifyIndent, skipSSLVerifyUsage)
 
 	consumer := &consumer{}
 
@@ -64,7 +70,15 @@ func (consumer *consumer) request(method string, url string, b []byte) (response
 	req.Header.Set("accept", "application/json; charset=utf-8")
 	req.Header.Set("user-agent", userAgent)
 
-	httpClient := &http.Client{Timeout: (120 * time.Second)}
+	tldConf := &tls.Config{
+		InsecureSkipVerify: webhookSkipSSLVerify,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tldConf,
+	}
+
+	httpClient := &http.Client{Timeout: (120 * time.Second), Transport: transport}
 
 	res, err := httpClient.Do(req)
 
