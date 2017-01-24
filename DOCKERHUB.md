@@ -2,7 +2,8 @@ A simple docker event beat server that will distribute docker events to plugins/
 
 # Supported tags and respective `Dockerfile` links
 
-* [`0.0.1`, `latest` (scratch/dockerfile)](https://github.com/dmportella/docker-beat/blob/0.0.1/dockerfile)
+* [`0.0.1`, (scratch/dockerfile)](https://github.com/dmportella/docker-beat/blob/0.0.1/dockerfile)
+* [`0.0.2`, `latest` (scratch/dockerfile)](https://github.com/dmportella/docker-beat/blob/0.0.2/dockerfile)
 
 ## Running in Docker
 
