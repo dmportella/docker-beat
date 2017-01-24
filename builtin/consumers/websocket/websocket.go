@@ -2,7 +2,7 @@ package rabbitmq
 
 import (
 	"github.com/dmportella/docker-beat/plugin"
-	_ "golang.org/x/net/websocket"
+	_ "golang.org/x/net/websocket" // not needed at the moment
 )
 
 type consumer struct {

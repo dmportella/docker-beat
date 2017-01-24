@@ -26,7 +26,7 @@ const (
 	webHookIndentUsage     = "webhook: Indent the json output."
 
 	defaultSkipSSLVerifyIndent = false
-	skipSSLVerifyUsage         = "webhook: Indent the json output."
+	skipSSLVerifyUsage         = "webhook: Tells docker-beat to ignore ssl verification for the endpoint (not recommented)."
 
 	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
 )
