@@ -35,9 +35,6 @@ func init() {
 		ConsumerUsage         = "Consumer to use: Webhook, Rabbitmq, etc."
 	)
 
-	flag.StringVar(&DockerEndpoint, "docker-endpoint", defaultDockerEndpoint, dockerEndpointUsage)
-	flag.StringVar(&Consumer, "consumer", defaultConsumer, ConsumerUsage)
-
 	const (
 		defaultHelp    = false
 		helpUsage      = "Prints the help information."
@@ -45,8 +42,11 @@ func init() {
 		verboseUsage   = "Redirect trace information to the standard out."
 	)
 
+	flag.StringVar(&DockerEndpoint, "docker-endpoint", defaultDockerEndpoint, dockerEndpointUsage)
+	flag.StringVar(&Consumer, "consumer", defaultConsumer, ConsumerUsage)
 	flag.BoolVar(&Verbose, "verbose", defaultVerbose, verboseUsage)
 	flag.BoolVar(&Help, "help", defaultHelp, helpUsage)
+
 	flag.Parse()
 
 	flag.Usage = func() {

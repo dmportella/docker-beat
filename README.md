@@ -26,15 +26,25 @@ The docker container supports Docker API Socket as a volume (not recommended) or
 Should be simple to run the application locally it differs just slightly between OS.
 
 ```
-docker-beat - Version: 0.0.2 Branch: master Revision: a798731. OSArch: linux/amd64.
+docker-beat - Version: 0.0.3 Branch: master Revision: 973cff0. OSArch: linux/amd64.
 Daniel Portella (c) 2016
 Usage of ./bin/docker-beat:
   -consumer string
-    	Consumer to use: Webhook, Rabbitmq, etc. (default "console")
+    	Consumer to use: webhook, rabbitmq, etc. (default "console")
   -docker-endpoint string
     	The Url or unix socket address for the Docker Remote API. (default "unix:///var/run/docker.sock")
   -help
     	Prints the help information.
+  -rabbitmq-endpoint string
+    	rabbitmq: The URL that events will be published too. (default "amqp://guest:guest@localhost:5672/")
+  -rabbitmq-exchange string
+    	rabbitmq: The exchange docker-beat will publish messages too. (default "docker-beat")
+  -rabbitmq-exchange-type string
+    	rabbitmq: The exchange type that docker-beat will create/connect too. (direct|fanout|topic|x-custom) (default "fanout")
+  -rabbitmq-reliable
+    	rabbitmq: The ensures messages published are confirmed.
+  -rabbitmq-routing-key string
+    	rabbitmq: The routing key for messages published to the exchange. (default: docker-event (default "docker-event")
   -verbose
     	Redirect trace information to the standard out.
   -webhook-endpoint string

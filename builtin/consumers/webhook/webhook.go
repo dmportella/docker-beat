@@ -36,7 +36,6 @@ type consumer struct {
 }
 
 func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-
 	var data []byte
 
 	if webHookIndent {
@@ -53,14 +52,13 @@ func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
 }
 
 func init() {
-	// do something here
 	flag.StringVar(&webHookEnpoint, "webhook-endpoint", defaultWebHookEndpoint, webHookEnpointUsage)
 	flag.BoolVar(&webHookIndent, "webhook-indent", defaultwebHookIndent, webHookIndentUsage)
 	flag.BoolVar(&webhookSkipSSLVerify, "webhook-skip-ssl-verify", defaultSkipSSLVerifyIndent, skipSSLVerifyUsage)
 
 	consumer := &consumer{}
 
-	plugin.RegisterConsumer(consumer)
+	plugin.RegisterConsumer("webhook", consumer)
 }
 
 func (consumer *consumer) request(method string, url string, b []byte) (response []byte, err error) {

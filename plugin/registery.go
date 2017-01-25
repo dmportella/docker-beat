@@ -6,15 +6,19 @@ type EventConsumer interface {
 }
 
 var (
-	consumers = []EventConsumer{}
+	consumers map[string]EventConsumer
 )
 
-// RegisterConsumer adds the consumer to the registry.
-func RegisterConsumer(consumer EventConsumer) {
-	consumers = append(consumers, consumer)
+func init() {
+	consumers = make(map[string]EventConsumer)
 }
 
-// GetConsumer temp method for testing
-func GetConsumer() (consumer EventConsumer) {
-	return consumers[0]
+// RegisterConsumer Adds a consumer to the registry.
+func RegisterConsumer(name string, consumer EventConsumer) {
+	consumers[name] = consumer
+}
+
+// GetConsumer Returns the selected consumer
+func GetConsumer(name string) (consumer EventConsumer) {
+	return consumers[name]
 }

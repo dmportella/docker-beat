@@ -54,7 +54,12 @@ func (dockerbeat *dockerBeat) dockerEventListener() {
 
 		if dockerbeat.consumer != "console" {
 			eventWrapper := plugin.DockerEvent{event}
-			go plugin.GetConsumer().OnEvent(eventWrapper)
+			consumer := plugin.GetConsumer(dockerbeat.consumer)
+			if consumer != nil {
+				go consumer.OnEvent(eventWrapper)
+			} else {
+				logging.Error.Printf("Consumer '%s' is not available.", dockerbeat.consumer)
+			}
 		}
 	}
 }
