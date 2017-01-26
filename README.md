@@ -7,7 +7,7 @@ A simple docker event beat server that will distribute docker events to plugins/
 
 ## Dockerhub
 
-[![dockeri.co](http://dockeri.co/image/dmportella/docker-beat?cache=qa1)](https://hub.docker.com/r/dmportella/docker-beat/)
+[![dockeri.co](http://dockeri.co/image/dmportella/docker-beat)](https://hub.docker.com/r/dmportella/docker-beat/)
 
 ## Running in Docker
 
