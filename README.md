@@ -9,6 +9,17 @@ A simple docker event beat server that will distribute docker events to plugins/
 
 [![dockeri.co](http://dockeri.co/image/dmportella/docker-beat)](https://hub.docker.com/r/dmportella/docker-beat/)
 
+## Current support
+
+Currently `docker-beat` supports sending docker events to the following endpoints.
+
+ - console
+ - rabbitmq
+ - webhook
+ - websockets
+
+See projects for future endpoints support and additional things on the roadmap.
+
 ## Running in Docker
 
 The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url.
