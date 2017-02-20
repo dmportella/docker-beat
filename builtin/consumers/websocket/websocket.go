@@ -1,50 +1,56 @@
 package rabbitmq
 
 import (
+	"encoding/json"
+	"flag"
+	"github.com/dmportella/docker-beat/logging"
 	"github.com/dmportella/docker-beat/plugin"
-	_ "golang.org/x/net/websocket" // not needed at the moment
-)
-
-type consumer struct {
-}
-
-func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-
-}
-
-func init() {
-	// do something here
-}
-
-/*package main
-
-import (
-	"fmt"
-	"log"
-
 	"golang.org/x/net/websocket"
 )
 
-var origin = "http://localhost/"
-var url = "ws://localhost:8080/echo"
+var (
+	WebsocketOrigin   string
+	WebsocketProtocol string
+	WebsocketEndpoint string
+)
 
-func main() {
-	ws, err := websocket.Dial(url, "", origin)
+const (
+	defaultWebsocketEndpoint = ""
+	WebsocketEndpointUsage   = "websocket: The URL that events will be streamed too."
+
+	defaultWebsocketProtocol = ""
+	WebsocketProtocolUsage   = "websocket: The protocol to be used in the web socket stream."
+
+	defaultWebsocketOrigin = ""
+	WebsocketOriginUsage   = "websocket: The origin of the request to be used in the web socket stream."
+
+	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
+)
+
+type consumer struct {
+	socket *websocket.Conn
+}
+
+func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
+	ws, err := websocket.Dial(WebsocketEndpoint, WebsocketProtocol, WebsocketOrigin)
 	if err != nil {
-		log.Fatal(err)
+		logging.Error.Println(err.Error())
+		return
 	}
 
-	message := []byte("hello, world!")
-	_, err = ws.Write(message)
+	data, _ := json.MarshalIndent(event, "", "    ")
+	_, err = ws.Write(data)
 	if err != nil {
-		log.Fatal(err)
+		logging.Error.Printf(err.Error())
 	}
-	fmt.Printf("Send: %s\n", message)
+}
 
-	var msg = make([]byte, 512)
-	_, err = ws.Read(msg)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Receive: %s\n", msg)
-}*/
+func init() {
+	flag.StringVar(&WebsocketEndpoint, "websocket-endpoint", defaultWebsocketEndpoint, WebsocketEndpointUsage)
+	flag.StringVar(&WebsocketProtocol, "websocket-protocol", defaultWebsocketProtocol, WebsocketProtocolUsage)
+	flag.StringVar(&WebsocketOrigin, "websocket-origin", defaultWebsocketOrigin, WebsocketOriginUsage)
+
+	consumer := &consumer{}
+
+	plugin.RegisterConsumer("websocket", consumer)
+}
