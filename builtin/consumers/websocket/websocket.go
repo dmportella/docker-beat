@@ -9,20 +9,25 @@ import (
 )
 
 var (
-	WebsocketOrigin   string
+	// WebsocketOrigin The http origin for the web socket.
+	WebsocketOrigin string
+
+	// WebsocketProtocol The protocol for the web socket.
 	WebsocketProtocol string
+
+	// WebsocketEndpoint The endpoint for the web socket.
 	WebsocketEndpoint string
 )
 
 const (
 	defaultWebsocketEndpoint = ""
-	WebsocketEndpointUsage   = "websocket: The URL that events will be streamed too."
+	websocketEndpointUsage   = "websocket: The URL that events will be streamed too."
 
 	defaultWebsocketProtocol = ""
-	WebsocketProtocolUsage   = "websocket: The protocol to be used in the web socket stream."
+	websocketProtocolUsage   = "websocket: The protocol to be used in the web socket stream."
 
 	defaultWebsocketOrigin = ""
-	WebsocketOriginUsage   = "websocket: The origin of the request to be used in the web socket stream."
+	websocketOriginUsage   = "websocket: The origin of the request to be used in the web socket stream."
 
 	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
 )
@@ -46,9 +51,9 @@ func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
 }
 
 func init() {
-	flag.StringVar(&WebsocketEndpoint, "websocket-endpoint", defaultWebsocketEndpoint, WebsocketEndpointUsage)
-	flag.StringVar(&WebsocketProtocol, "websocket-protocol", defaultWebsocketProtocol, WebsocketProtocolUsage)
-	flag.StringVar(&WebsocketOrigin, "websocket-origin", defaultWebsocketOrigin, WebsocketOriginUsage)
+	flag.StringVar(&WebsocketEndpoint, "websocket-endpoint", defaultWebsocketEndpoint, websocketEndpointUsage)
+	flag.StringVar(&WebsocketProtocol, "websocket-protocol", defaultWebsocketProtocol, websocketProtocolUsage)
+	flag.StringVar(&WebsocketOrigin, "websocket-origin", defaultWebsocketOrigin, websocketOriginUsage)
 
 	consumer := &consumer{}
 

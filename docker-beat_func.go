@@ -53,7 +53,7 @@ func (dockerbeat *dockerBeat) dockerEventListener() {
 		logging.Info.Printf("Type: '%s' Action: '%s' Status: '%s' Time: '%d' Id: '%s'", event.Type, event.Action, event.Status, event.Time, event.ID)
 
 		if dockerbeat.consumer != "console" {
-			eventWrapper := plugin.DockerEvent{event}
+			eventWrapper := plugin.DockerEvent{docker.APIEvents: event}
 			consumer := plugin.GetConsumer(dockerbeat.consumer)
 			if consumer != nil {
 				go consumer.OnEvent(eventWrapper)
