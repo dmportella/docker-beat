@@ -24,7 +24,7 @@ See projects for future endpoints support and additional things on the roadmap.
 
 The docker container supports Docker API Socket as a volume (not recommended) or you can provide the Docker API Url.
 
-### Running docker-beat with Docker API as Socker Volume
+### Running docker-beat with Docker API as Socket Volume
 
 > $ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock dmportella/docker-beat --consumer webhook --webhook-endpoint http://requestb.in/rn7cixrn
 
