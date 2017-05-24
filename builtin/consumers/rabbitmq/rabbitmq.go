@@ -1,9 +1,9 @@
 package rabbitmq
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
+
 	"github.com/dmportella/docker-beat/logging"
 	"github.com/dmportella/docker-beat/plugin"
 	"github.com/streadway/amqp"
@@ -36,7 +36,6 @@ const (
 
 type consumer struct {
 	Debug        bool
-	Indent       bool
 	endpoint     string
 	exchange     string
 	exchangeType string
@@ -45,15 +44,7 @@ type consumer struct {
 	connection   *amqp.Connection
 }
 
-func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-	var data []byte
-
-	if consumer.Indent {
-		data, _ = json.MarshalIndent(event, "", "    ")
-	} else {
-		data, _ = json.Marshal(event)
-	}
-
+func (consumer *consumer) OnEvent(event plugin.DockerEvent, data []byte) {
 	err := consumer.publish(data)
 	if err != nil {
 		logging.Error.Printf("Error publishing event '%s'\n", err)

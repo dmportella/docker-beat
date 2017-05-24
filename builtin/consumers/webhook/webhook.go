@@ -3,30 +3,27 @@ package webhook
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/json"
 	"errors"
 	"flag"
-	"github.com/dmportella/docker-beat/logging"
-	"github.com/dmportella/docker-beat/plugin"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/dmportella/docker-beat/logging"
+	"github.com/dmportella/docker-beat/plugin"
 )
 
 var (
 	webHookEnpoint       string
-	webHookIndent        bool
 	webhookSkipSSLVerify bool
 )
 
 const (
 	defaultWebHookEndpoint = ""
 	webHookEnpointUsage    = "webhook: The URL that events will be POSTed too."
-	defaultwebHookIndent   = false
-	webHookIndentUsage     = "webhook: Indent the json output."
 
-	defaultSkipSSLVerifyIndent = false
-	skipSSLVerifyUsage         = "webhook: Tells docker-beat to ignore ssl verification for the endpoint (not recommented)."
+	defaultSkipSSLVerify = false
+	skipSSLVerifyUsage   = "webhook: Tells docker-beat to ignore ssl verification for the endpoint (not recommented)."
 
 	userAgent = "Docker-Beat (https://github.com/dmportella/docker-beat, 0.0.0)"
 )
@@ -35,15 +32,7 @@ type consumer struct {
 	Debug bool
 }
 
-func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-	var data []byte
-
-	if webHookIndent {
-		data, _ = json.MarshalIndent(event, "", "    ")
-	} else {
-		data, _ = json.Marshal(event)
-	}
-
+func (consumer *consumer) OnEvent(event plugin.DockerEvent, data []byte) {
 	if _, err := url.Parse(webHookEnpoint); err != nil || webHookEnpoint == "" {
 		logging.Error.Printf("Webhook url is not valid '%s'\n", webHookEnpoint)
 	} else {
@@ -53,8 +42,7 @@ func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
 
 func init() {
 	flag.StringVar(&webHookEnpoint, "webhook-endpoint", defaultWebHookEndpoint, webHookEnpointUsage)
-	flag.BoolVar(&webHookIndent, "webhook-indent", defaultwebHookIndent, webHookIndentUsage)
-	flag.BoolVar(&webhookSkipSSLVerify, "webhook-skip-ssl-verify", defaultSkipSSLVerifyIndent, skipSSLVerifyUsage)
+	flag.BoolVar(&webhookSkipSSLVerify, "webhook-skip-ssl-verify", defaultSkipSSLVerify, skipSSLVerifyUsage)
 
 	consumer := &consumer{}
 

@@ -1,8 +1,8 @@
 package rabbitmq
 
 import (
-	"encoding/json"
 	"flag"
+
 	"github.com/dmportella/docker-beat/logging"
 	"github.com/dmportella/docker-beat/plugin"
 	"golang.org/x/net/websocket"
@@ -36,15 +36,17 @@ type consumer struct {
 	socket *websocket.Conn
 }
 
-func (consumer *consumer) OnEvent(event plugin.DockerEvent) {
-	ws, err := websocket.Dial(WebsocketEndpoint, WebsocketProtocol, WebsocketOrigin)
-	if err != nil {
-		logging.Error.Println(err.Error())
-		return
-	}
+func (consumer *consumer) OnEvent(event plugin.DockerEvent, data []byte) {
+	if consumer.socket == nil {
+		ws, err := websocket.Dial(WebsocketEndpoint, WebsocketProtocol, WebsocketOrigin)
+		if err != nil {
+			logging.Error.Println(err.Error())
+			return
+		}
 
-	data, _ := json.MarshalIndent(event, "", "    ")
-	_, err = ws.Write(data)
+		consumer.socket = ws
+	}
+	_, err := consumer.socket.Write(data)
 	if err != nil {
 		logging.Error.Printf(err.Error())
 	}

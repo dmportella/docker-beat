@@ -4,10 +4,14 @@ import (
 	"github.com/fsouza/go-dockerclient"
 )
 
-type dockerBeat struct {
-	dockerEndpoint string
-	consumer       string
+type configuration struct {
+	IndentJSON     bool
+	DockerEndpoint string
+	Consumer       string
+}
 
+type dockerBeat struct {
 	dockerEvents chan *docker.APIEvents
 	dockerClient *docker.Client
+	config       configuration
 }

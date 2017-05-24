@@ -1,19 +1,20 @@
 package main
 
 import (
+	"encoding/json"
+
 	"github.com/dmportella/docker-beat/logging"
 	"github.com/dmportella/docker-beat/plugin"
 	"github.com/fsouza/go-dockerclient"
 )
 
-func newDockerBeat(dockerEndpoint string, consumer string) (*dockerBeat, error) {
+func newDockerBeat(config configuration) (*dockerBeat, error) {
 	dockerbeat := &dockerBeat{
-		dockerEvents:   make(chan *docker.APIEvents),
-		dockerEndpoint: dockerEndpoint,
-		consumer:       consumer,
+		dockerEvents: make(chan *docker.APIEvents),
+		config:       config,
 	}
 
-	client, err := docker.NewClient(dockerbeat.dockerEndpoint)
+	client, err := docker.NewClient(dockerbeat.config.DockerEndpoint)
 
 	if err != nil {
 		logging.Error.Printf(err.Error())
@@ -41,6 +42,15 @@ func (dockerbeat *dockerBeat) listContainers() {
 	}
 }
 
+func (dockerbeat *dockerBeat) indentJSON(event plugin.DockerEvent) (data []byte) {
+	if dockerbeat.config.IndentJSON {
+		data, _ = json.MarshalIndent(event, "", "    ")
+	} else {
+		data, _ = json.Marshal(event)
+	}
+	return data
+}
+
 func (dockerbeat *dockerBeat) dockerEventListener() {
 	err := dockerbeat.dockerClient.AddEventListener(dockerbeat.dockerEvents)
 
@@ -52,13 +62,14 @@ func (dockerbeat *dockerBeat) dockerEventListener() {
 	for event := range dockerbeat.dockerEvents {
 		logging.Info.Printf("Type: '%s' Action: '%s' Status: '%s' Time: '%d' Id: '%s'", event.Type, event.Action, event.Status, event.Time, event.ID)
 
-		if dockerbeat.consumer != "console" {
+		if dockerbeat.config.Consumer != "console" {
 			eventWrapper := plugin.DockerEvent{APIEvents: event}
-			consumer := plugin.GetConsumer(dockerbeat.consumer)
+			consumer := plugin.GetConsumer(dockerbeat.config.Consumer)
 			if consumer != nil {
-				go consumer.OnEvent(eventWrapper)
+				eventData := dockerbeat.indentJSON(eventWrapper)
+				go consumer.OnEvent(eventWrapper, eventData)
 			} else {
-				logging.Error.Printf("Consumer '%s' is not available.", dockerbeat.consumer)
+				logging.Error.Printf("Consumer '%s' is not available.", dockerbeat.config.Consumer)
 			}
 		}
 	}

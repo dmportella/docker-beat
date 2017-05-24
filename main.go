@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	_ "github.com/dmportella/docker-beat/builtin"
-	"github.com/dmportella/docker-beat/logging"
 	"io/ioutil"
 	"os"
 	"os/signal"
+
+	_ "github.com/dmportella/docker-beat/builtin"
+	"github.com/dmportella/docker-beat/logging"
 )
 
 // Set on build
@@ -22,6 +23,7 @@ var (
 var (
 	DockerEndpoint string
 	Consumer       string
+	IndentJSON     bool
 	Version        bool
 	Verbose        bool
 	Help           bool
@@ -33,6 +35,8 @@ func init() {
 		dockerEndpointUsage   = "The Url or unix socket address for the Docker Remote API."
 		defaultConsumer       = "console"
 		ConsumerUsage         = "Consumer to use: Webhook, Rabbitmq, etc."
+		defaultIndentJSON     = false
+		indentJSONUsage       = "Indent the json output."
 	)
 
 	const (
@@ -44,6 +48,7 @@ func init() {
 
 	flag.StringVar(&DockerEndpoint, "docker-endpoint", defaultDockerEndpoint, dockerEndpointUsage)
 	flag.StringVar(&Consumer, "consumer", defaultConsumer, ConsumerUsage)
+	flag.BoolVar(&IndentJSON, "indent", defaultIndentJSON, indentJSONUsage)
 	flag.BoolVar(&Verbose, "verbose", defaultVerbose, verboseUsage)
 	flag.BoolVar(&Help, "help", defaultHelp, helpUsage)
 
@@ -81,7 +86,9 @@ func main() {
 		}
 	}()
 
-	beat, err := newDockerBeat(DockerEndpoint, Consumer)
+	config := configuration{DockerEndpoint: DockerEndpoint, Consumer: Consumer, IndentJSON: IndentJSON}
+
+	beat, err := newDockerBeat(config)
 
 	if err == nil {
 		beat.Start()
