@@ -36,7 +36,14 @@ type consumer struct {
 	socket *websocket.Conn
 }
 
+func (consumer *consumer) resetConnection() {
+	consumer.socket.Close()
+	consumer.socket = nil
+}
+
 func (consumer *consumer) OnEvent(event plugin.DockerEvent, data []byte) {
+CONN:
+	count := 0
 	if consumer.socket == nil {
 		ws, err := websocket.Dial(WebsocketEndpoint, WebsocketProtocol, WebsocketOrigin)
 		if err != nil {
@@ -46,9 +53,15 @@ func (consumer *consumer) OnEvent(event plugin.DockerEvent, data []byte) {
 
 		consumer.socket = ws
 	}
+
 	_, err := consumer.socket.Write(data)
 	if err != nil {
 		logging.Error.Printf(err.Error())
+		consumer.resetConnection()
+		if count < 2 {
+			count = count + 1
+			goto CONN
+		}
 	}
 }
 
